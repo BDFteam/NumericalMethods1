@@ -11,13 +11,12 @@ import scipy
 from scipy import optimize
 
 def main():
-    #FalsePosition()
-    #BisectionMethod()
-    ModifiedFalsePosition()
-    return
+    # false_position()
+    bisection_method()
+    # modified_false_position()
 
 def f(x):
-    result = 1/x - math.log10(x) + math.log10(2)
+    result = 1/x - np.log(x) + np.log(2)
     return result
 
 def plot():
@@ -33,118 +32,136 @@ def plot():
     plt.grid(linestyle=':',linewidth=1.5)
     plt.plot(qr,qq)
    
-def FalsePosition():
-    a = 1
-    b = 5
-    k = 0
-    ak = np.empty(100)          # 100 bigger than max iteration
-    bk = np.empty(100)
-    ak[0] = a
-    bk[0] = b
-    equalszero = False
-    widthinterval = False
-    maxiterations = False
-    maxiterationsnum = 50
-    widthintervalnum = 0.000001
-    acceptableerror = 0.00000001
+def false_position():
+    left_boundry = 1
+    right_boundry = 5
+    iterations = 0
+
+    left_boundry_array = np.empty(100)          # 100 bigger than max iteration
+    right_boundry_array = np.empty(100)
+    left_boundry_array[0] = left_boundry
+    right_boundry_array[0] = right_boundry
+    equals_zero = False
+    width_interval = False
+    max_iterations_reached = False
+    max_iterations = 50
+    minimum_witdh = 0.000001
+    acceptable_error = 0.00000001
     c = 0.0
-    while equalszero == False and widthinterval == False and maxiterations == False:
-        k += 1
-        c = (a * f(b) - b * f(a))/(f(b) - f(a))
-        if abs(f(c)) < acceptableerror:
-            equalszero = True
-        elif f(c) * f(a) > 0 :
-            a = c          
+    
+    while not equals_zero and not width_interval and not max_iterations_reached:
+        iterations += 1
+        c = (left_boundry * f(right_boundry) - right_boundry * f(left_boundry))/(f(right_boundry) - f(left_boundry))
+        
+        if abs(f(c)) < acceptable_error:
+            equals_zero = True
+        elif f(c) * f(left_boundry) > 0:
+            left_boundry = c          
         else:
-            b = c
-        ak[k] = a
-        bk[k] = b
-        if k == maxiterationsnum :
-            maxiterations = True
-        if b - a < widthintervalnum:
-            widthinterval = True
+            right_boundry = c
+        left_boundry_array[iterations] = left_boundry
+        right_boundry_array[iterations] = right_boundry
+        if iterations == max_iterations :
+            max_iterations_reached = True
+        if right_boundry - left_boundry < minimum_witdh:
+            width_interval = True
     root = c
-    print(root, equalszero, widthinterval, maxiterations, a, b, k)
+    print(f"{root=}\n{equals_zero=}\n{width_interval=}\n{max_iterations_reached=}\n{left_boundry=}\n{right_boundry=}\n{iterations=}")
     return root
 
-def BisectionMethod():
-    a = 1
-    b = 5
-    k = 0
-    ak = np.empty(100)          # 100 bigger than max iteration
-    bk = np.empty(100)
-    ak[0] = a
-    bk[0] = b
-    equalszero = False
-    widthinterval = False
-    maxiterations = False
-    maxiterationsnum = 50
-    widthintervalnum = 0.00000001
-    acceptableerror = 0.00000001
+def bisection_method():
+    left_boundry = 1
+    right_boundry = 5
+    iterations = 0
+
+    left_boundry_array = np.empty(100)          # 100 bigger than max iteration
+    right_boundry_array = np.empty(100)
+    left_boundry_array[0] = left_boundry
+    right_boundry_array[0] = right_boundry
+    equals_zero = False
+    width_interval = False
+    max_iterations_reached = False
+    max_iterations = 50
+    width_interval = 0.00000001
+    acceptable_error = 0.00000001
     c = 0.0
-    while equalszero == False and widthinterval == False and maxiterations == False:
-        k += 1
-        c = a + (b - a)/2
-        if abs(f(c)) < acceptableerror:
-            equalszero = True
-        elif np.sign(f(c)) == np.sign(f(a)):
-            a = c          
+
+    while (not equals_zero) and (not width_interval) and (not max_iterations_reached):
+        iterations += 1
+        c = left_boundry + (right_boundry - left_boundry)/2
+        
+        if abs(f(c)) < acceptable_error:
+            equals_zero = True
+        elif np.sign(f(c)) == np.sign(f(left_boundry)):
+            left_boundry = c          
         else:
-            b = c
-        ak[k] = a
-        bk[k] = b
-        if k == maxiterationsnum :
-            maxiterations = True
-        if b - a < widthintervalnum:
-            widthinterval = True
+            right_boundry = c
+        
+        left_boundry_array[iterations] = left_boundry
+        right_boundry_array[iterations] = right_boundry
+        
+        if iterations == max_iterations :
+            max_iterations_reached = True
+        
+        if right_boundry - left_boundry < width_interval:
+            width_interval = True
+    
     root = c
-    print(root, equalszero, widthinterval, maxiterations, a, b, k)
+    print(f"{root=}\n{equals_zero=}\n{width_interval=}\n{max_iterations_reached=}\n{left_boundry=}\n{right_boundry=}\n{iterations=}")
     return root
 
-def ModifiedFalsePosition():
-    a = 1
-    b = 5
-    k = 0
-    qa = 0
-    qb = 0
-    ak = np.empty(100)          # 100 bigger than max iteration
-    bk = np.empty(100)
-    ak[0] = a
-    bk[0] = b
-    equalszero = False
-    widthinterval = False
-    maxiterations = False
-    maxiterationsnum = 50
-    widthintervalnum = 0.000001
-    acceptableerror = 0.00000001
+def modified_false_position():
+    left_boundry = 1
+    right_boundry = 5
+    iteration = 0
+
+    counter_left_boundry_used = 0
+    counter_right_boundry_used = 0
+
+    left_boundry_array = np.empty(100)          # 100 bigger than max iteration
+    right_boundry_array = np.empty(100)
+    left_boundry_array[0] = left_boundry
+    right_boundry_array[0] = right_boundry
+
+    equals_zero = False
+    width_interval_reached = False
+    max_iterations_reached = False
+    max_iterations = 50
+    width_interval = 0.000001
+    acceptable_error = 0.00000001
     c = 0.0
-    while equalszero == False and widthinterval == False and maxiterations == False:
-        k += 1
-        if qa == 2 or qb == 2 :
-            if f(a)*f(b) > 0:
-              c = (a * f(b) - 2 * b * f(a))/(f(b) - 2 * f(a))
+
+    while (not equals_zero) and (not width_interval_reached) and (not max_iterations_reached):
+        iteration += 1
+        if counter_left_boundry_used == 2 or counter_right_boundry_used == 2 :
+            if f(left_boundry)*f(right_boundry) > 0:
+              c = (left_boundry * f(right_boundry) - 2 * right_boundry * f(left_boundry))/(f(right_boundry) - 2 * f(left_boundry))
             else:
-              c = (2 * a * f(b) - b * f(a))/(2 * f(b) - f(a))
+              c = (2 * left_boundry * f(right_boundry) - right_boundry * f(left_boundry))/(2 * f(right_boundry) - f(left_boundry))
         else :
-            c = (a * f(b) - b * f(a))/(f(b) - f(a))
-        if abs(f(c)) < acceptableerror:
-            equalszero = True
-        elif f(c) * f(a) > 0 :
-            a = c
-            qb = 0
-            qa += 1
+            c = (left_boundry * f(right_boundry) - right_boundry * f(left_boundry))/(f(right_boundry) - f(left_boundry))
+
+        if abs(f(c)) < acceptable_error:
+            equals_zero = True
+        elif f(c) * f(left_boundry) > 0 :
+            left_boundry = c
+            counter_right_boundry_used += 1
+            counter_left_boundry_used = 0
         else:
-            b = c
-            qa = 0
-            qb += 1
-        ak[k] = a
-        bk[k] = b
-        if k == maxiterationsnum :
-            maxiterations = True
-        if b - a < widthintervalnum:
-            widthinterval = True
+            right_boundry = c
+            counter_left_boundry_used += 1
+            counter_right_boundry_used = 0
+        
+        left_boundry_array[iteration] = left_boundry
+        right_boundry_array[iteration] = right_boundry
+        if iteration == max_iterations :
+            max_iterations_reached = True
+        
+        if right_boundry - left_boundry < width_interval:
+            width_interval_reached = True
+        
     root = c
-    print(root, equalszero, widthinterval, maxiterations, a, b, k)
+    print(f"{root=}\n{equals_zero=}\n{width_interval_reached=}\n{max_iterations_reached=}\n{left_boundry=}\n{right_boundry=}\n{iteration=}")
     return root
        
 if __name__ == "__main__":
