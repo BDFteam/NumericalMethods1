@@ -12,8 +12,8 @@ from scipy import optimize
 
 def main():
     # false_position()
-    bisection_method()
-    # modified_false_position()
+    # bisection_method()
+    modified_false_position()
 
 def f(x):
     result = 1/x - np.log(x) + np.log(2)
@@ -47,25 +47,25 @@ def false_position():
     max_iterations = 50
     minimum_witdh = 0.000001
     acceptable_error = 0.00000001
-    c = 0.0
+    center = 0.0
     
     while (not equals_zero) and (not width_interval_reached) and (not max_iterations_reached):
         iterations += 1
-        c = (left_boundry * f(right_boundry) - right_boundry * f(left_boundry))/(f(right_boundry) - f(left_boundry))
+        center = (left_boundry * f(right_boundry) - right_boundry * f(left_boundry))/(f(right_boundry) - f(left_boundry))
         
-        if abs(f(c)) < acceptable_error:
+        if abs(f(center)) < acceptable_error:
             equals_zero = True
-        elif f(c) * f(left_boundry) > 0:
-            left_boundry = c          
+        elif np.sign(f(center)) == np.sign(f(left_boundry)):
+            left_boundry = center          
         else:
-            right_boundry = c
+            right_boundry = center
         left_boundry_array[iterations] = left_boundry
         right_boundry_array[iterations] = right_boundry
         if iterations == max_iterations :
             max_iterations_reached = True
         if right_boundry - left_boundry < minimum_witdh:
             width_interval_reached = True
-    root = c
+    root = center
     print(f"{root=}\n{equals_zero=}\n{width_interval_reached=}\n{max_iterations_reached=}\n{left_boundry=}\n{right_boundry=}\n{iterations=}")
     return root
 
@@ -79,23 +79,23 @@ def bisection_method():
     left_boundry_array[0] = left_boundry
     right_boundry_array[0] = right_boundry
     equals_zero = False
-    width_interval = False
+    width_interval_reached = False
     max_iterations_reached = False
     max_iterations = 50
     width_interval = 0.00000001
     acceptable_error = 0.00000001
-    c = 0.0
+    center = 0.0
 
-    while (not equals_zero) and (not width_interval) and (not max_iterations_reached):
+    while (not equals_zero) and (not width_interval_reached) and (not max_iterations_reached):
         iterations += 1
-        c = left_boundry + (right_boundry - left_boundry)/2
+        center = left_boundry + (right_boundry - left_boundry)/2
         
-        if abs(f(c)) < acceptable_error:
+        if abs(f(center)) < acceptable_error:
             equals_zero = True
-        elif np.sign(f(c)) == np.sign(f(left_boundry)):
-            left_boundry = c          
+        elif np.sign(f(center)) == np.sign(f(left_boundry)):
+            left_boundry = center          
         else:
-            right_boundry = c
+            right_boundry = center
         
         left_boundry_array[iterations] = left_boundry
         right_boundry_array[iterations] = right_boundry
@@ -104,9 +104,9 @@ def bisection_method():
             max_iterations_reached = True
         
         if right_boundry - left_boundry < width_interval:
-            width_interval = True
+            width_interval_reached = True
     
-    root = c
+    root = center
     print(f"{root=}\n{equals_zero=}\n{width_interval=}\n{max_iterations_reached=}\n{left_boundry=}\n{right_boundry=}\n{iterations=}")
     return root
 
@@ -129,26 +129,26 @@ def modified_false_position():
     max_iterations = 50
     width_interval = 0.000001
     acceptable_error = 0.00000001
-    c = 0.0
+    center = 0.0
 
     while (not equals_zero) and (not width_interval_reached) and (not max_iterations_reached):
         iteration += 1
         if counter_left_boundry_used == 2 or counter_right_boundry_used == 2 :
             if f(left_boundry)*f(right_boundry) > 0:
-              c = (left_boundry * f(right_boundry) - 2 * right_boundry * f(left_boundry))/(f(right_boundry) - 2 * f(left_boundry))
+              center = (left_boundry * f(right_boundry) - 2 * right_boundry * f(left_boundry))/(f(right_boundry) - 2 * f(left_boundry))
             else:
-              c = (2 * left_boundry * f(right_boundry) - right_boundry * f(left_boundry))/(2 * f(right_boundry) - f(left_boundry))
+              center = (2 * left_boundry * f(right_boundry) - right_boundry * f(left_boundry))/(2 * f(right_boundry) - f(left_boundry))
         else :
-            c = (left_boundry * f(right_boundry) - right_boundry * f(left_boundry))/(f(right_boundry) - f(left_boundry))
+            center = (left_boundry * f(right_boundry) - right_boundry * f(left_boundry))/(f(right_boundry) - f(left_boundry))
 
-        if abs(f(c)) < acceptable_error:
+        if abs(f(center)) < acceptable_error:
             equals_zero = True
-        elif f(c) * f(left_boundry) > 0 :
-            left_boundry = c
+        elif np.sign(f(center)) == np.sign(f(left_boundry)):
+            left_boundry = center
             counter_right_boundry_used += 1
             counter_left_boundry_used = 0
         else:
-            right_boundry = c
+            right_boundry = center
             counter_left_boundry_used += 1
             counter_right_boundry_used = 0
         
@@ -160,7 +160,7 @@ def modified_false_position():
         if right_boundry - left_boundry < width_interval:
             width_interval_reached = True
         
-    root = c
+    root = center
     print(f"{root=}\n{equals_zero=}\n{width_interval_reached=}\n{max_iterations_reached=}\n{left_boundry=}\n{right_boundry=}\n{iteration=}")
     return root
        
