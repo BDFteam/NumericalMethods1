@@ -42,14 +42,14 @@ def false_position():
     left_boundry_array[0] = left_boundry
     right_boundry_array[0] = right_boundry
     equals_zero = False
-    width_interval = False
+    width_interval_reached = False
     max_iterations_reached = False
     max_iterations = 50
     minimum_witdh = 0.000001
     acceptable_error = 0.00000001
     c = 0.0
     
-    while not equals_zero and not width_interval and not max_iterations_reached:
+    while (not equals_zero) and (not width_interval_reached) and (not max_iterations_reached):
         iterations += 1
         c = (left_boundry * f(right_boundry) - right_boundry * f(left_boundry))/(f(right_boundry) - f(left_boundry))
         
@@ -64,9 +64,9 @@ def false_position():
         if iterations == max_iterations :
             max_iterations_reached = True
         if right_boundry - left_boundry < minimum_witdh:
-            width_interval = True
+            width_interval_reached = True
     root = c
-    print(f"{root=}\n{equals_zero=}\n{width_interval=}\n{max_iterations_reached=}\n{left_boundry=}\n{right_boundry=}\n{iterations=}")
+    print(f"{root=}\n{equals_zero=}\n{width_interval_reached=}\n{max_iterations_reached=}\n{left_boundry=}\n{right_boundry=}\n{iterations=}")
     return root
 
 def bisection_method():
